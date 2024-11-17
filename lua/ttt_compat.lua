@@ -3,7 +3,7 @@ if SERVER then
 	local enabled_convars = {"rm_normal_death_ragdolls", "rm_enable_manual"}
 	local changed_convars = {
 		rm_damage_phys_multiplier = 2,    -- Double physics damage
-		rm_damage_phys_min = 30,         -- Lower minimum threshold
+		rm_damage_phys_min = 2000,         -- Lower minimum threshold
 		rm_damage_force_multiplier = 2,   -- Double force from impacts
 	}
 
