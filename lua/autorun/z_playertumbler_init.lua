@@ -10,7 +10,7 @@ if SERVER then
 	--AddCSLuaFile("Player-Tumbler_Settings.lua")
 	AddCSLuaFile("ttt_compat.lua")
 	include("ttt_compat.lua")
---else
+else
 	--include("Player-Tumbler_Settings.lua")
 	include("ttt_compat.lua")
 end
