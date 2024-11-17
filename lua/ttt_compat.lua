@@ -1,6 +1,6 @@
 if SERVER then
 	local disabled_convars = {"rm_show_tips", "rm_enable_manual", "rm_doorbreaching", "rm_movement_fly"}
-	local enabled_convars = {"rm_normal_death_ragdolls"}
+	local enabled_convars = {"rm_normal_death_ragdolls", "rm_enable_manual"}
 	local changed_convars = {
 		rm_damage_phys_multiplier = 2,    -- Double physics damage
 		rm_damage_phys_min = 30,         -- Lower minimum threshold
@@ -55,7 +55,6 @@ if SERVER then
 			local ragdoll = ragmod:GetRagmodRagdoll(ply)
 			SafeRemoveEntity(ragdoll)
 
-			ply.Ragmod_SavedInventory = nil -- Reset saved inventory
 			ply.NoRagmodInventoryRestore = true
 		end
 	end)
@@ -95,6 +94,20 @@ if SERVER then
 			if not IsValid(ent) then return false end
 			return old_rm_IsRagmodRagdoll(self, ent)
 		end
+
+		local ragmod_Tick = hook.GetTable().Tick.ragmod_Tick
+		hook.Add("Tick", "TTT2RagmodTick", function()
+			for i, ragdoll in ipairs(ragmod.Ragdolls) do
+				-- This shouldn't happen unless someone broke something
+				if not IsValid(ragdoll) then
+					table.remove(ragmod.Ragdolls, i)
+				elseif not ragdoll.Tick then
+					ragdoll.Tick = function() end
+				end
+			end
+
+			ragmod_Tick()
+		end)
 	end)
 end
 
@@ -125,7 +138,7 @@ if CLIENT then
 		PLY.RM_OpenMenu = function() end
 		PLY.RM_CloseMenu = function() end
 
-		local bad_cvars = { rm_key_ragdolize = true, rm_key_fly = true, rm_key_open_menu = true }
+		local bad_cvars = { rm_key_fly = true, rm_key_open_menu = true }
 		if RagmodInputTable then
 			for i, inpt in pairs(RagmodInputTable) do
 				if bad_cvars[inpt.ConVarName] then
