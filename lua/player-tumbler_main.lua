@@ -266,7 +266,7 @@ local function PhysicsCollide(ply, tab)
 	--local max_velocity = math.max(velocity_diff[1], velocity_diff[2], velocity_diff[3])
 	local velocity_old = velocity_diff:Length()
 
-	if not_ground_ent and momentum >= 600 and velocity >= 100 and velocity_old >= 200 then
+	if not_ground_ent and momentum >= 600 and velocity >= 50 and velocity_old >= 200 then
 		--print("\nPLAYER HIT PROP", "\n MAX MOMENTUM", max_momentum_ent, "\n MAX VELOCITY", max_velocity, "\n MAX VELOCITY ENT", max_velocity_ent)
 
 		info["GoingToBeRagdoll"] = true
