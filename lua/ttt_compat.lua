@@ -1,5 +1,5 @@
 if SERVER then
-	local disabled_convars = {"rm_show_tips", "rm_enable_manual", "rm_doorbreaching"}
+	local disabled_convars = {"rm_show_tips", "rm_enable_manual", "rm_doorbreaching", "rm_movement_fly"}
 	local enabled_convars = {"rm_normal_death_ragdolls"}
 
 	for _, cvar in pairs(disabled_convars) do
