@@ -22,6 +22,13 @@ if SERVER then
 
 		SafeRemoveEntity(ragdoll)
 	end)
+
+	hook.Add("RM_RagdollReady", "TTT2RagmodOutfitterRagdoll", function(rag, ply)
+		net.Start("TTTOutfitterRagdoll")
+		net.WritePlayer(ply)
+		net.WriteUInt(rag:EntIndex(), 13)
+		net.Broadcast()
+	end)
 end
 
 if CLIENT then
