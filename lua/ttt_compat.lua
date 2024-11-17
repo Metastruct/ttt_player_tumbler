@@ -44,6 +44,7 @@ if SERVER then
 			SafeRemoveEntity(ragdoll)
 
 			ply.Ragmod_SavedInventory = nil -- Reset saved inventory
+			ply.NoRagmodInventoryRestore = true
 		end
 	end)
 
@@ -52,6 +53,11 @@ if SERVER then
 
 		local old_rm_RestorePlayerInventory = ragmod.RestorePlayerInventory
 		ragmod.RestorePlayerInventory = function(self, ply)
+			if ply.NoRagmodInventoryRestore then
+				ply.NoRagmodInventoryRestore = nil
+				return
+			end
+
 			if ply.Ragmod_SavedInventory then
 				ply:SetCredits(ply.Ragmod_SavedInventory.credits)
 				for _, equipment_class in pairs(ply.Ragmod_SavedInventory.equipment) do
@@ -101,7 +107,7 @@ if CLIENT then
 	end)
 
 	hook.Add("Initialize", "TTT2RemoveRagmodOptions", function()
-		concommand.Remove("rm_menu")
+		concommand.Add("rm_menu", function() end) -- disable ragmod menu
 
 		local PLY = FindMetaTable("Player")
 		PLY.RM_OpenMenu = function() end
