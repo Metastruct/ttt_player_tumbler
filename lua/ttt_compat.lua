@@ -1,5 +1,5 @@
 if SERVER then
-	local disabled_convars = {"rm_show_tips", "rm_enable_manual", "rm_doorbreaching", "rm_movement_fly"}
+	local disabled_convars = {"rm_show_tips", "rm_doorbreaching", "rm_movement_fly"}
 	local enabled_convars = {"rm_normal_death_ragdolls", "rm_enable_manual"}
 	local changed_convars = {
 		rm_damage_phys_multiplier = 2,    -- Double physics damage
