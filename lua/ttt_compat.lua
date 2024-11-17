@@ -36,12 +36,32 @@ if SERVER then
 		end
 	end)
 
-	hook.Add("TTTPrepareRound", "TTT2RagmodOverrides", function()
+	hook.Add("TTTPrepareRound", "TTT2RagmodRemoveRagdoll", function()
 		if not ragmod then return end
 
 		for _, ply in ipairs(player.GetAll()) do
 			local ragdoll = ragmod:GetRagmodRagdoll(ply)
 			SafeRemoveEntity(ragdoll)
+		end
+	end)
+
+	hook.Add("Initialize", "TTT2RagmodOverrides", function()
+		if not ragmod then return end
+
+		local old_rm_RestorePlayerInventory = ragmod.RestorePlayerInventory
+		ragmod.RestorePlayerInventory = function(self, ply)
+			ply:SetCredits(ply.Ragmod_SavedInventory.credits)
+			for _, equipment_class in pairs(ply.Ragmod_SavedInventory.equipment) do
+				ply:AddEquipmentItem(equipment_class)
+			end
+			old_rm_RestorePlayerInventory(self,ply)
+		end
+
+		local old_rm_SavePlayerInventory = ragmod.SavePlayerInventory
+		ragmod.SavePlayerInventory = function(self, ply)
+			old_rm_SavePlayerInventory(self, ply)
+			ply.Ragmod_SavedInventory.credits = ply:GetCredits()
+			ply.Ragmod_SavedInventory.equipment = ply:GetEquipmentItems()
 		end
 	end)
 end
@@ -60,7 +80,7 @@ if CLIENT then
 	end)
 
 	hook.Add("TTT2PreventAccessShop", "TTT2RagmodPreventAccessShop", function(ply)
-		if ragmod and ragmod:IsRagmodRagdoll(ply) then
+		if ragmod and ragmod:IsRagdoll(ply) then
 			return true
 		end
 	end)
