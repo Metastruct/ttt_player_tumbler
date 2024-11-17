@@ -45,21 +45,27 @@ if SERVER then
 		ply.next_reset_is_override = true
 	end)
 
-	hook.Add("TTTEndRound", "TTT2RagmodOverrides", function()
+	hook.Add("TTTPrepareRound", "TTT2RagmodOverrides", function()
 		for _, ply in ipairs(player.GetAll()) do
+			local ragdoll = ragmod and ragmod:GetRagmodRagdoll(ply)
+			SafeRemoveEntity(ragdoll)
+
 			ply.next_reset_is_override = nil
+			if ply.old_ResetRoundFlags then
+				ply:old_ResetRoundFlags()
+			end
 		end
 	end)
 
 	-- This is gross but it works
-	hook.Add("Initialize", "TTT2RagmodOverrides", function()
+	hook.Add("InitPostEntity", "TTT2RagmodOverrides", function()
 		local PLY = FindMetaTable("Player")
 		PLY.old_ResetRoundFlags = PLY.old_ResetRoundFlags or PLY.ResetRoundFlags
 		PLY.ResetRoundFlags = function(ply) -- This is called on PlayerSpawn, which is called when a player gets up from a ragdoll
 			if ply.next_reset_is_override then
 				ply.next_reset_is_override = nil
 
-				if ply:IsTerror() then return end -- only override for players that are still in the round
+				return
 			end
 
 			ply:old_ResetRoundFlags()
