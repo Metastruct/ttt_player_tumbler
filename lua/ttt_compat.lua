@@ -37,11 +37,16 @@ if CLIENT then
 		return owner
 	end)
 
-	local PLY = FindMetaTable("Player")
-	hook.Add("Initialize", "TTT2RagmodOptions", function()
-		concommand.Remove("rm_menu")
+	local remove_rm_menu_hooks = { "Initialize", "InitPostEntity", "HUDPaint" }
+	for _, hook_type in pairs(remove_rm_menu_hooks) do
+		hook.Add(hook_type, "TTT2RemoveRagmodOptions", function()
+			concommand.Remove("rm_menu")
 
-		PLY.RM_OpenMenu = function() end
-		PLY.RM_CloseMenu = function() end
-	end)
+			local PLY = FindMetaTable("Player")
+			PLY.RM_OpenMenu = function() end
+			PLY.RM_CloseMenu = function() end
+
+			hook.Remove(hook_type, "TTT2RemoveRagmodOptions")
+		end)
+	end
 end
