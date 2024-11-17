@@ -21,6 +21,7 @@ if SERVER then
 		local ragdoll = ragmod:GetRagmodRagdoll(ply)
 
 		SafeRemoveEntity(ragdoll)
+		ply.next_reset_is_override = nil
 	end)
 
 	hook.Add("RM_RagdollReady", "TTT2RagmodOutfitterRagdoll", function(rag, ply)
@@ -38,7 +39,7 @@ if SERVER then
 
 	hook.Add("RM_RagdollPossessed", "TTT2RagmodRestoreCredits", function(rag, ply)
 		if not IsValid(ply) then return end
-		if ply.IsTerroa and not ply:IsTerror() then return end
+		if ply.IsTerror and not ply:IsTerror() then return end
 		if GetRoundState and GetRoundState() ~= ROUND_ACTIVE then return end
 
 		ply.next_reset_is_override = true
