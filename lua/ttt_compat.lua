@@ -21,7 +21,6 @@ if SERVER then
 		local ragdoll = ragmod:GetRagmodRagdoll(ply)
 
 		SafeRemoveEntity(ragdoll)
-		ply.ragdoll_pre_data = nil
 	end)
 
 	hook.Add("RM_RagdollReady", "TTT2RagmodOutfitterRagdoll", function(rag, ply)
@@ -29,41 +28,6 @@ if SERVER then
 		net.WritePlayer(ply)
 		net.WriteUInt(rag:EntIndex(), 13)
 		net.Broadcast()
-
-		local weapon_data = {}
-		for _, wep in ipairs(ply:GetWeapons()) do
-			table.insert(weapon_data, {
-				class = wep:GetClass(),
-				ammo = wep:Clip1(),
-				clip = wep:Clip2(),
-			})
-		end
-
-		ply.ragdoll_pre_data = {
-			credits = ply:GetCredits(),
-			equipment = ply:GetEquipmentItems(),
-			weapons = weapon_data,
-		}
-	end)
-
-	hook.Add("PlayerSpawn", "TTT2RagmodRestoreData", function(ply)
-		if not ply.ragdoll_pre_data then return end
-
-		ply:SetCredits(ply.ragdoll_pre_data.credits)
-
-		for _, equipment_class in pairs(ply.ragdoll_pre_data.equipment) do
-			ply:AddEquipmentItem(equipment_class)
-		end
-
-		for _, data in ipairs(ply.ragdoll_pre_data.weapons) do
-			local wep = ply:Give(data.class)
-			wep:SetClip1(data.ammo)
-			wep:SetClip2(data.clip)
-		end
-
-		ply.ragdoll_pre_data = nil
-
-		return true
 	end)
 
 	hook.Add("TTTCanOrderEquipment", "TTT2RagmodOrderEquipment", function(ply)
@@ -73,11 +37,11 @@ if SERVER then
 	end)
 
 	hook.Add("TTTPrepareRound", "TTT2RagmodOverrides", function()
-		for _, ply in ipairs(player.GetAll()) do
-			local ragdoll = ragmod and ragmod:GetRagmodRagdoll(ply)
-			SafeRemoveEntity(ragdoll)
+		if not ragmod then return end
 
-			ply.ragdoll_pre_data = nil
+		for _, ply in ipairs(player.GetAll()) do
+			local ragdoll = ragmod:GetRagmodRagdoll(ply)
+			SafeRemoveEntity(ragdoll)
 		end
 	end)
 end
@@ -93,6 +57,12 @@ if CLIENT then
 		if not owner:IsTerror() then return end
 
 		return owner
+	end)
+
+	hook.Add("TTT2PreventAccessShop", "TTT2RagmodPreventAccessShop", function(ply)
+		if ragmod and ragmod:IsRagmodRagdoll(ply) then
+			return true
+		end
 	end)
 
 	hook.Add("Initialize", "TTT2RemoveRagmodOptions", function()
