@@ -71,6 +71,12 @@ if SERVER then
 				ply.Ragmod_SavedInventory.equipment = ply:GetEquipmentItems()
 			end
 		end
+
+		local old_rm_IsRagmodRagdoll = ragmod.IsRagmodRagdoll
+		ragmod.IsRagmodRagdoll = function(self, ent) -- fix oversight in ragmod
+			if not IsValid(ent) then return false end
+			return old_rm_IsRagmodRagdoll(self, ent)
+		end
 	end)
 end
 
