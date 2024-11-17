@@ -25,14 +25,7 @@ if SERVER then
 end
 
 if CLIENT then
-	hook.Add("TTTRenderEntityInfo", "TTT2RagdollTargetID", function(tData)
-		if not targetid then return end
-		if not ragmod then return end
-
-		local ent = tData:GetEntity()
-		if not IsValid(ent) then return end
-
-		-- Check if entity is a ragdoll
+	hook.Add("TTTModifyTargetedEntity", "TTT2RagdollTargetID", function(ent, distance)
 		if not ent:IsRagdoll() then return end
 		if not ragmod:IsRagmodRagdoll(ent) then return end
 
@@ -41,6 +34,6 @@ if CLIENT then
 		if not IsValid(owner) then return end
 		if not owner:IsTerror() then return end
 
-		targetid.HUDDrawTargetIDPlayers(owner)
+		return owner
 	end)
 end
