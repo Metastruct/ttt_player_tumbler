@@ -232,9 +232,9 @@ local function PhysicsCollide(ply, tab)
 		--local max_momentum = math.max(momentum[1], momentum[2], momentum[3], momentum_diag)
 		--local max_velocity = math.max(math.abs(ent_old_vel[1]), math.abs(ent_old_vel[2]), math.abs(ent_old_vel[3]))
 		local velocity = ent_old_vel:Length()
-		local momentum_threshold = 150
+		local momentum_threshold = 300
 
-		if ragmod:IsRagmodRagdoll(hit_ent) then momentum_threshold = 50 end
+		if ragmod:IsRagmodRagdoll(hit_ent) then momentum_threshold = 150 end
 
 		if not_ground_ent and momentum >= momentum_threshold and velocity >= 100 then
 			--print("\n PROP HIT PLAYER", momentum, "\n ENT", ent_old_vel, "\n PLAYER", ply_old_vel, "\n DIFF", velocity_diff, "\n")--, momentum_ply)
