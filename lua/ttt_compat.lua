@@ -49,23 +49,21 @@ if SERVER then
 	hook.Add("PlayerSpawn", "TTT2RagmodRestoreData", function(ply)
 		if not ply.ragdoll_pre_data then return end
 
-		timer.Simple(0.1, function()
-			if not ply:IsValid() then return end
+		ply:SetCredits(ply.ragdoll_pre_data.credits)
 
-			ply:SetCredits(ply.ragdoll_pre_data.credits)
+		for _, equipment_class in pairs(ply.ragdoll_pre_data.equipment) do
+			ply:AddEquipmentItem(equipment_class)
+		end
 
-			for _, equipment_class in pairs(ply.ragdoll_pre_data.equipment) do
-				ply:AddEquipmentItem(equipment_class)
-			end
+		for _, data in ipairs(ply.ragdoll_pre_data.weapons) do
+			local wep = ply:Give(data.class)
+			wep:SetClip1(data.ammo)
+			wep:SetClip2(data.clip)
+		end
 
-			for _, data in ipairs(ply.ragdoll_pre_data.weapons) do
-				local wep = ply:Give(data.class)
-				wep:SetClip1(data.ammo)
-				wep:SetClip2(data.clip)
-			end
+		ply.ragdoll_pre_data = nil
 
-			ply.ragdoll_pre_data = nil
-		end)
+		return true
 	end)
 
 	hook.Add("TTTCanOrderEquipment", "TTT2RagmodOrderEquipment", function(ply)
