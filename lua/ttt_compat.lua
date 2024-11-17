@@ -25,7 +25,7 @@ if SERVER then
 end
 
 if CLIENT then
-	hook.Add("TTTModifyTargetedEntity", "TTT2RagdollTargetID", function(ent, distance)
+	hook.Add("TTTModifyTargetedEntity", "TTT2RagmodRagdollTargetID", function(ent, distance)
 		if not ent:IsRagdoll() then return end
 		if not ragmod:IsRagmodRagdoll(ent) then return end
 
@@ -35,5 +35,13 @@ if CLIENT then
 		if not owner:IsTerror() then return end
 
 		return owner
+	end)
+
+	local PLY = FindMetaTable("Player")
+	hook.Add("Initialize", "TTT2RagmodOptions", function()
+		concommand.Remove("rm_menu")
+
+		PLY.RM_OpenMenu = function() end
+		PLY.RM_CloseMenu = function() end
 	end)
 end
