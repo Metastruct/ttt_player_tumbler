@@ -124,5 +124,14 @@ if CLIENT then
 		local PLY = FindMetaTable("Player")
 		PLY.RM_OpenMenu = function() end
 		PLY.RM_CloseMenu = function() end
+
+		local bad_cvars = { rm_key_ragdolize = true, rm_key_fly = true, rm_key_open_menu = true }
+		if RagmodInputTable then
+			for i, inpt in pairs(RagmodInputTable) do
+				if bad_cvars[inpt.ConVarName] then
+					table.remove(RagmodInputTable, i)
+				end
+			end
+		end
 	end)
 end
