@@ -52,18 +52,24 @@ if SERVER then
 
 		local old_rm_RestorePlayerInventory = ragmod.RestorePlayerInventory
 		ragmod.RestorePlayerInventory = function(self, ply)
-			ply:SetCredits(ply.Ragmod_SavedInventory.credits)
-			for _, equipment_class in pairs(ply.Ragmod_SavedInventory.equipment) do
-				ply:AddEquipmentItem(equipment_class)
+			if ply.Ragmod_SavedInventory then
+				ply:SetCredits(ply.Ragmod_SavedInventory.credits)
+				for _, equipment_class in pairs(ply.Ragmod_SavedInventory.equipment) do
+					ply:AddEquipmentItem(equipment_class)
+				end
 			end
+
 			old_rm_RestorePlayerInventory(self,ply)
 		end
 
 		local old_rm_SavePlayerInventory = ragmod.SavePlayerInventory
 		ragmod.SavePlayerInventory = function(self, ply)
 			old_rm_SavePlayerInventory(self, ply)
-			ply.Ragmod_SavedInventory.credits = ply:GetCredits()
-			ply.Ragmod_SavedInventory.equipment = ply:GetEquipmentItems()
+
+			if ply.Ragmod_SavedInventory then
+				ply.Ragmod_SavedInventory.credits = ply:GetCredits()
+				ply.Ragmod_SavedInventory.equipment = ply:GetEquipmentItems()
+			end
 		end
 	end)
 end
