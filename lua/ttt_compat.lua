@@ -1,6 +1,11 @@
 if SERVER then
 	local disabled_convars = {"rm_show_tips", "rm_enable_manual", "rm_doorbreaching", "rm_movement_fly"}
 	local enabled_convars = {"rm_normal_death_ragdolls"}
+	local changed_convars = {
+		rm_damage_phys_multiplier = 2,    -- Double physics damage
+		rm_damage_phys_min = 30,         -- Lower minimum threshold
+		rm_damage_force_multiplier = 2,   -- Double force from impacts
+	}
 
 	for _, cvar in pairs(disabled_convars) do
 		local convar = GetConVar(cvar)
@@ -13,6 +18,13 @@ if SERVER then
 		local convar = GetConVar(cvar)
 		if convar then
 			convar:SetBool(true)
+		end
+	end
+
+	for cvar, value in pairs(changed_convars) do
+		local convar = GetConVar(cvar)
+		if convar then
+			convar:SetInt(value)
 		end
 	end
 
