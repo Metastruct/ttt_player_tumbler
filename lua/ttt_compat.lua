@@ -42,6 +42,8 @@ if SERVER then
 		for _, ply in ipairs(player.GetAll()) do
 			local ragdoll = ragmod:GetRagmodRagdoll(ply)
 			SafeRemoveEntity(ragdoll)
+
+			ply.Ragmod_SavedInventory = nil -- Reset saved inventory
 		end
 	end)
 
