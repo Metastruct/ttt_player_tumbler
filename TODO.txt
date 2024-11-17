@@ -1,0 +1,5 @@
+- Fix losing your weapons
+- Physical traps not working?
+- Move ragdoll head where player is looking?
+- Camera gets attached to other players
+- Controls for ragdolls die
