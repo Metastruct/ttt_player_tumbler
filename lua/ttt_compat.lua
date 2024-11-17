@@ -21,7 +21,7 @@ if SERVER then
 		local ragdoll = ragmod:GetRagmodRagdoll(ply)
 
 		SafeRemoveEntity(ragdoll)
-		ply.next_reset_is_override = nil
+		ply.ragdoll_pre_data = nil
 	end)
 
 	hook.Add("RM_RagdollReady", "TTT2RagmodOutfitterRagdoll", function(rag, ply)
@@ -29,6 +29,43 @@ if SERVER then
 		net.WritePlayer(ply)
 		net.WriteUInt(rag:EntIndex(), 13)
 		net.Broadcast()
+
+		local weapon_data = {}
+		for _, wep in ipairs(ply:GetWeapons()) do
+			table.insert(weapon_data, {
+				class = wep:GetClass(),
+				ammo = wep:Clip1(),
+				clip = wep:Clip2(),
+			})
+		end
+
+		ply.ragdoll_pre_data = {
+			credits = ply:GetCredits(),
+			equipment = ply:GetEquipmentItems(),
+			weapons = weapon_data,
+		}
+	end)
+
+	hook.Add("PlayerSpawn", "TTT2RagmodRestoreData", function(ply)
+		if not ply.ragdoll_pre_data then return end
+
+		timer.Simple(0.1, function()
+			if not ply:IsValid() then return end
+
+			ply:SetCredits(ply.ragdoll_pre_data.credits)
+
+			for _, equipment_class in pairs(ply.ragdoll_pre_data.equipment) do
+				ply:AddEquipmentItem(equipment_class)
+			end
+
+			for _, data in ipairs(ply.ragdoll_pre_data.weapons) do
+				local wep = ply:Give(data.class)
+				wep:SetClip1(data.ammo)
+				wep:SetClip2(data.clip)
+			end
+
+			ply.ragdoll_pre_data = nil
+		end)
 	end)
 
 	hook.Add("TTTCanOrderEquipment", "TTT2RagmodOrderEquipment", function(ply)
@@ -37,38 +74,12 @@ if SERVER then
 		end
 	end)
 
-	hook.Add("RM_RagdollPossessed", "TTT2RagmodRestoreCredits", function(rag, ply)
-		if not IsValid(ply) then return end
-		if ply.IsTerror and not ply:IsTerror() then return end
-		if GetRoundState and GetRoundState() ~= ROUND_ACTIVE then return end
-
-		ply.next_reset_is_override = true
-	end)
-
 	hook.Add("TTTPrepareRound", "TTT2RagmodOverrides", function()
 		for _, ply in ipairs(player.GetAll()) do
 			local ragdoll = ragmod and ragmod:GetRagmodRagdoll(ply)
 			SafeRemoveEntity(ragdoll)
 
-			ply.next_reset_is_override = nil
-			if ply.old_ResetRoundFlags then
-				ply:old_ResetRoundFlags()
-			end
-		end
-	end)
-
-	-- This is gross but it works
-	hook.Add("InitPostEntity", "TTT2RagmodOverrides", function()
-		local PLY = FindMetaTable("Player")
-		PLY.old_ResetRoundFlags = PLY.old_ResetRoundFlags or PLY.ResetRoundFlags
-		PLY.ResetRoundFlags = function(ply) -- This is called on PlayerSpawn, which is called when a player gets up from a ragdoll
-			if ply.next_reset_is_override then
-				ply.next_reset_is_override = nil
-
-				return
-			end
-
-			ply:old_ResetRoundFlags()
+			ply.ragdoll_pre_data = nil
 		end
 	end)
 end
