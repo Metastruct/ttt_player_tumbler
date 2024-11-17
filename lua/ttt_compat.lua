@@ -77,6 +77,7 @@ if CLIENT then
 		local owner = ent.GetOwningPlayer and ent:GetOwningPlayer() or nil
 		if not IsValid(owner) then return end
 		if not owner:IsTerror() then return end
+		if owner == LocalPlayer() then return end
 
 		return owner
 	end)
