@@ -1,5 +1,7 @@
-- Fix losing your weapons
+- Fix losing your weapons, items
 - Physical traps not working?
 - Move ragdoll head where player is looking?
 - Camera gets attached to other players
 - Controls for ragdolls die
+- You can ragdoll while being dead/spectating
+- Doors get breached randomly somehow
