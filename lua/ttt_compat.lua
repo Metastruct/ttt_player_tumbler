@@ -53,19 +53,17 @@ if SERVER then
 		end
 	end)
 
-	hook.Add("TTTPrepareRound", "TTT2RagmodRemoveRagdoll", function()
+	hook.Add("TTTEndRound", "TTT2RagmodRemoveRagdoll", function()
 		if not ragmod then return end
 
 		for _, ply in ipairs(player.GetAll()) do
 			local ragdoll = ragmod:GetRagmodRagdoll(ply)
 			SafeRemoveEntity(ragdoll)
-
-			ply.NoRagmodInventoryRestore = true
 		end
 	end)
 
 	hook.Add("RM_CanAction", "TTT2RagmodCanAction", function(ply, action)
-		if not ply:IsTerror() then return false end
+		if not ply:IsTerror() or (GetRoundState and GetRoundState() ~= ROUND_ACTIVE) then return false end
 	end)
 
 	hook.Add("Initialize", "TTT2RagmodOverrides", function()
@@ -73,12 +71,6 @@ if SERVER then
 
 		local old_rm_RestorePlayerInventory = ragmod.RestorePlayerInventory
 		ragmod.RestorePlayerInventory = function(self, ply)
-			if ply.NoRagmodInventoryRestore then
-				ply.Ragmod_SavedInventory = nil
-				ply.NoRagmodInventoryRestore = nil
-				return
-			end
-
 			if ply.Ragmod_SavedInventory then
 				ply:SetCredits(ply.Ragmod_SavedInventory.credits)
 				for _, equipment_class in pairs(ply.Ragmod_SavedInventory.equipment) do
