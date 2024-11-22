@@ -143,6 +143,10 @@ if CLIENT then
 		end
 	end)
 
+	hook.Add("RM_CanChangeCamera", "TTT2RagmodCanChangeCamera", function(ply)
+		return false
+	end)
+
 	hook.Add("Initialize", "TTT2RemoveRagmodOptions", function()
 		concommand.Add("rm_menu", function() end) -- disable ragmod menu
 
