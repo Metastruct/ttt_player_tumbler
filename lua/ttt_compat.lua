@@ -74,6 +74,7 @@ if SERVER then
 		local old_rm_RestorePlayerInventory = ragmod.RestorePlayerInventory
 		ragmod.RestorePlayerInventory = function(self, ply)
 			if ply.NoRagmodInventoryRestore then
+				ply.Ragmod_SavedInventory = nil
 				ply.NoRagmodInventoryRestore = nil
 				return
 			end
