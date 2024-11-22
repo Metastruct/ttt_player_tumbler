@@ -1,3 +1,7 @@
+hook.Add("RM_CanAction", "TTT2RagmodCanAction", function(ply, action)
+	if not ply:IsTerror() or (GetRoundState and GetRoundState() ~= ROUND_ACTIVE) then return false end
+end)
+
 if SERVER then
 	local disabled_convars = {"rm_show_tips", "rm_doorbreaching", "rm_movement_fly"}
 	local enabled_convars = {"rm_normal_death_ragdolls", "rm_enable_manual"}
@@ -60,10 +64,6 @@ if SERVER then
 			local ragdoll = ragmod:GetRagmodRagdoll(ply)
 			SafeRemoveEntity(ragdoll)
 		end
-	end)
-
-	hook.Add("RM_CanAction", "TTT2RagmodCanAction", function(ply, action)
-		if not ply:IsTerror() or (GetRoundState and GetRoundState() ~= ROUND_ACTIVE) then return false end
 	end)
 
 	hook.Add("Initialize", "TTT2RagmodOverrides", function()
