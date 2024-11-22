@@ -59,6 +59,18 @@ if SERVER then
 		end
 	end)
 
+	hook.Add("RM_CanAction", "TTT2RagmodCanAction", function(ply, action)
+		if not ply:IsTerror() then return false end
+	end)
+
+	hook.Add("RM_CanPlaySound", "TTT2RagmodCanPlaySound", function(ply, sound	)
+		if not ply:IsTerror() then return false end
+	end)
+
+	hook.Add("RM_CanChangeCamera", "TTT2RagmodCanChangeCamera", function(ply)
+		return false
+	end)
+
 	hook.Add("Initialize", "TTT2RagmodOverrides", function()
 		if not ragmod then return end
 
